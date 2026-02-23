@@ -1,5 +1,5 @@
 # Pasport ID Android SDK
 
-## Обзор
+## Overview
 
-PasportID SDK — клиентская библиотека для интеграции SSO-аутентификации через приложение Pasport на Android.
+The Pasport ID SDK is a client library for integrating SSO authentication via the Pasport app on Android.
