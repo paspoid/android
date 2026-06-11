@@ -2,7 +2,7 @@
 
 English | [Русский](README.ru.md)
 
-The Paspo ID SDK lets users authenticate in your application with their Paspo account, similar to "Sign in with Google".
+The Paspo ID SDK adds "Sign in with Paspo" to your Android app. Users authenticate with their existing Paspo account in a couple of taps, and your server receives their verified profile data - phone, e-mail or national ID - without you building, verifying or storing those credentials yourself.
 
 ## Contents
 
@@ -35,24 +35,6 @@ All communication between the application and Paspo is end-to-end encrypted (ECD
 Two responsibilities remain on your server and cannot be moved to the client, as they are the basis of the flow's security: generating the `nonce`, and exchanging the authorization code for user data.
 
 The fastest way to integrate is the [ready-made button](#quick-start-the-ready-made-button). For full control over the appearance, use the [headless API](#custom-integration).
-
-The examples below reference the following application-side functions:
-
-- `backend.requestSsoNonce(): String` - a suspend call that requests a fresh one-time nonce from your server.
-- `backend.signInWithPaspo(authCode: String)` - sends the authorization code to your server to complete sign-in.
-- `showError(error: PaspoClientError)` - your error presentation.
-- `onPaspoResult(result: PaspoAuthResult)` - a single result handler, defined once:
-
-```kotlin
-private fun onPaspoResult(result: PaspoAuthResult) {
-    when (result) {
-        is PaspoAuthResult.Success -> backend.signInWithPaspo(result.authCode)
-        is PaspoAuthResult.Failure -> showError(result.error)
-        PaspoAuthResult.Cancelled,
-        PaspoAuthResult.NotInstalled -> Unit
-    }
-}
-```
 
 ## Requirements
 
@@ -94,6 +76,24 @@ dependencies {
 ![Paspo ID sign-in button - brand, light and dark themes, full and icon-only](buttons.svg)
 
 The ready-made button runs the entire flow on tap and blocks repeated taps while a request is in progress. It requires two inputs: a nonce provider and a result handler.
+
+The examples in this document reference the following functions that you provide:
+
+- `backend.requestSsoNonce(): String` - a suspend call that requests a fresh one-time nonce from your server.
+- `backend.signInWithPaspo(authCode: String)` - sends the authorization code to your server to complete sign-in.
+- `showError(error: PaspoClientError)` - your error presentation.
+- `onPaspoResult(result: PaspoAuthResult)` - a single result handler, defined once:
+
+```kotlin
+private fun onPaspoResult(result: PaspoAuthResult) {
+    when (result) {
+        is PaspoAuthResult.Success -> backend.signInWithPaspo(result.authCode)
+        is PaspoAuthResult.Failure -> showError(result.error)
+        PaspoAuthResult.Cancelled,
+        PaspoAuthResult.NotInstalled -> Unit
+    }
+}
+```
 
 ```kotlin
 PaspoSignInButton(
@@ -252,19 +252,24 @@ This call is optional: `authenticate` performs the check and, when Paspo is not 
 
 ## Authentication flow
 
-```
-Your server          Application                  Paspo (app)              Paspo server
-    |                    |                            |                       |
-    |<--- request nonce -|                            |                       |
-    |---- nonce -------->|                            |                       |
-    |                    |-- authenticate(scope,      |                       |
-    |                    |   nonce) ----------------->|                       |
-    |                    |                            |-- verify application ->|
-    |                    |                            |   consent screen      |
-    |                    |<-- encrypted response -----|                       |
-    |<-- auth code ------|                            |                       |
-    |--- exchange auth code for user data (server-to-server) ---------------->|
-    |<-- profile data ----------------------------------------------------------|
+```mermaid
+sequenceDiagram
+    participant B as Your server
+    participant A as Your app (SDK)
+    participant P as Paspo app
+    participant PS as Paspo server
+
+    A->>B: request nonce
+    B-->>A: nonce
+    A->>P: authenticate(scope, nonce)
+    Note over A,P: ephemeral ECDH key, end-to-end encrypted
+    P->>PS: verify app signature & package
+    Note over P: user consent screen
+    P-->>A: encrypted response
+    Note over A: decrypt → Success(authCode)
+    A->>B: authCode
+    B->>PS: exchange authCode (server-to-server)
+    PS-->>B: user profile data
 ```
 
 1. The server generates a `nonce` and provides it to the application.
@@ -347,4 +352,4 @@ Yes; see the first example under [Custom integration](#compose), or use the read
 
 ## Support
 
-For onboarding inquiries (registering the application's package and signature, the repository URL, the server-side exchange API): [pingocean.com](https://pingocean.com).
+For onboarding inquiries (registering the application's package and signature, the repository URL, the server-side exchange API): [paspo.id](https://paspo.id).

@@ -5,22 +5,22 @@
 
   <!-- BRAND (default) -->
   <rect y="0" width="220" height="48" rx="24" fill="#1677FF"/>
-  <use href="#paspo" transform="translate(16,14) scale(0.2409)" fill="#FFFFFF"/>
-  <text x="48" y="24" dominant-baseline="central" font-size="16" font-weight="500" fill="#FFFFFF">Sign in with Paspo ID</text>
+  <use href="#paspo" transform="translate(16,10) scale(0.3373)" fill="#FFFFFF"/>
+  <text x="56" y="24" dominant-baseline="central" font-size="16" font-weight="500" fill="#FFFFFF">Sign in with Paspo ID</text>
   <rect x="236" y="0" width="48" height="48" rx="24" fill="#1677FF"/>
-  <use href="#paspo" transform="translate(250,14) scale(0.2409)" fill="#FFFFFF"/>
+  <use href="#paspo" transform="translate(246,10) scale(0.3373)" fill="#FFFFFF"/>
 
   <!-- LIGHT -->
   <rect x="0.5" y="64.5" width="219" height="47" rx="23.5" fill="#FFFFFF" stroke="#E0E0E0"/>
-  <use href="#paspo" transform="translate(16,78) scale(0.2409)" fill="#1F1F1F"/>
-  <text x="48" y="88" dominant-baseline="central" font-size="16" font-weight="500" fill="#1F1F1F">Sign in with Paspo ID</text>
+  <use href="#paspo" transform="translate(16,74) scale(0.3373)" fill="#1F1F1F"/>
+  <text x="56" y="88" dominant-baseline="central" font-size="16" font-weight="500" fill="#1F1F1F">Sign in with Paspo ID</text>
   <rect x="236.5" y="64.5" width="47" height="47" rx="23.5" fill="#FFFFFF" stroke="#E0E0E0"/>
-  <use href="#paspo" transform="translate(250,78) scale(0.2409)" fill="#1F1F1F"/>
+  <use href="#paspo" transform="translate(246,74) scale(0.3373)" fill="#1F1F1F"/>
 
   <!-- DARK -->
   <rect y="128" width="220" height="48" rx="24" fill="#131314"/>
-  <use href="#paspo" transform="translate(16,142) scale(0.2409)" fill="#E3E3E3"/>
-  <text x="48" y="152" dominant-baseline="central" font-size="16" font-weight="500" fill="#E3E3E3">Sign in with Paspo ID</text>
+  <use href="#paspo" transform="translate(16,138) scale(0.3373)" fill="#E3E3E3"/>
+  <text x="56" y="152" dominant-baseline="central" font-size="16" font-weight="500" fill="#E3E3E3">Sign in with Paspo ID</text>
   <rect x="236" y="128" width="48" height="48" rx="24" fill="#131314"/>
-  <use href="#paspo" transform="translate(250,142) scale(0.2409)" fill="#E3E3E3"/>
+  <use href="#paspo" transform="translate(246,138) scale(0.3373)" fill="#E3E3E3"/>
 </svg>

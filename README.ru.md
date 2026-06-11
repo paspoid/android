@@ -2,7 +2,7 @@
 
 [English](README.md) | Русский
 
-Paspo ID SDK позволяет пользователям проходить аутентификацию в вашем приложении через аккаунт Paspo - аналогично «Войти через Google».
+Paspo ID SDK добавляет «Войти через Paspo» в ваше Android-приложение. Пользователи входят через свой аккаунт Paspo в пару касаний, а ваш сервер получает их подтверждённые данные профиля - телефон, e-mail или национальное удостоверение - без необходимости самим создавать, проверять и хранить эти учётные данные.
 
 ## Содержание
 
@@ -35,24 +35,6 @@ Paspo ID SDK позволяет пользователям проходить а
 Две обязанности остаются на вашем сервере и не могут быть перенесены на клиент, поскольку являются основой безопасности потока: генерация `nonce` и обмен кода авторизации на данные пользователя.
 
 Быстрее всего интегрировать Paspo через [готовую кнопку](#быстрый-старт-готовая-кнопка). Для полного контроля над внешним видом используйте [headless API](#собственная-интеграция).
-
-Примеры ниже ссылаются на следующие функции на стороне приложения:
-
-- `backend.requestSsoNonce(): String` - suspend-вызов, запрашивающий у вашего сервера свежий одноразовый nonce.
-- `backend.signInWithPaspo(authCode: String)` - отправляет код авторизации на ваш сервер для завершения входа.
-- `showError(error: PaspoClientError)` - ваше отображение ошибки.
-- `onPaspoResult(result: PaspoAuthResult)` - единый обработчик результата, определённый один раз:
-
-```kotlin
-private fun onPaspoResult(result: PaspoAuthResult) {
-    when (result) {
-        is PaspoAuthResult.Success -> backend.signInWithPaspo(result.authCode)
-        is PaspoAuthResult.Failure -> showError(result.error)
-        PaspoAuthResult.Cancelled,
-        PaspoAuthResult.NotInstalled -> Unit
-    }
-}
-```
 
 ## Требования
 
@@ -94,6 +76,24 @@ dependencies {
 ![Кнопка входа Paspo ID - темы brand, light и dark, полная и icon-only](buttons.svg)
 
 Готовая кнопка запускает весь поток по нажатию и блокирует повторные нажатия, пока выполняется запрос. Ей требуются две вещи: поставщик nonce и обработчик результата.
+
+Примеры в этой документации ссылаются на следующие функции, которые предоставляете вы:
+
+- `backend.requestSsoNonce(): String` - suspend-вызов, запрашивающий у вашего сервера свежий одноразовый nonce.
+- `backend.signInWithPaspo(authCode: String)` - отправляет код авторизации на ваш сервер для завершения входа.
+- `showError(error: PaspoClientError)` - ваше отображение ошибки.
+- `onPaspoResult(result: PaspoAuthResult)` - единый обработчик результата, определённый один раз:
+
+```kotlin
+private fun onPaspoResult(result: PaspoAuthResult) {
+    when (result) {
+        is PaspoAuthResult.Success -> backend.signInWithPaspo(result.authCode)
+        is PaspoAuthResult.Failure -> showError(result.error)
+        PaspoAuthResult.Cancelled,
+        PaspoAuthResult.NotInstalled -> Unit
+    }
+}
+```
 
 ```kotlin
 PaspoSignInButton(
@@ -252,19 +252,24 @@ if (paspoId.checkInstallation()) {
 
 ## Поток аутентификации
 
-```
-Ваш сервер          Приложение                   Paspo (приложение)        Сервер Paspo
-    |                    |                            |                       |
-    |<--- запрос nonce --|                            |                       |
-    |---- nonce -------->|                            |                       |
-    |                    |-- authenticate(scope,      |                       |
-    |                    |   nonce) ----------------->|                       |
-    |                    |                            |-- проверка приложения>|
-    |                    |                            |   экран согласия      |
-    |                    |<-- зашифрованный ответ ----|                       |
-    |<-- код авторизации-|                            |                       |
-    |--- обмен кода на данные пользователя (server-to-server) --------------->|
-    |<-- данные профиля --------------------------------------------------------|
+```mermaid
+sequenceDiagram
+    participant B as Ваш сервер
+    participant A as Ваше приложение (SDK)
+    participant P as Приложение Paspo
+    participant PS as Сервер Paspo
+
+    A->>B: запрос nonce
+    B-->>A: nonce
+    A->>P: authenticate(scope, nonce)
+    Note over A,P: эфемерный ключ ECDH, end-to-end шифрование
+    P->>PS: проверка подписи и package приложения
+    Note over P: экран согласия пользователя
+    P-->>A: зашифрованный ответ
+    Note over A: расшифровка → Success(authCode)
+    A->>B: authCode
+    B->>PS: обмен authCode (server-to-server)
+    PS-->>B: данные профиля пользователя
 ```
 
 1. Сервер генерирует `nonce` и передаёт его приложению.
@@ -347,4 +352,4 @@ SDK очищает криптографическое состояние при 
 
 ## Поддержка
 
-По вопросам подключения (регистрация package и подписи приложения, URL репозитория, серверный API обмена кода): [pingocean.com](https://pingocean.com).
+По вопросам подключения (регистрация package и подписи приложения, URL репозитория, серверный API обмена кода): [paspo.id](https://paspo.id).
