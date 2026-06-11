@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="PaspoSignInButton">
+        <attr name="paspoTheme" format="enum">
+            <enum name="brand" value="0" />
+            <enum name="light" value="1" />
+            <enum name="dark" value="2" />
+            <enum name="neutral" value="3" />
+        </attr>
+        <attr name="paspoCornerRadius" format="dimension" />
+        <attr name="paspoIconOnly" format="boolean" />
+    </declare-styleable>
+</resources>

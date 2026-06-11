@@ -1,0 +1,135 @@
+public abstract interface annotation class paspo/id/ssoprovider/shared/PaspoInternalApi : java/lang/annotation/Annotation {
+}
+
+public final class paspo/id/ssoprovider/shared/models/PaspoClientError : java/lang/Enum {
+	public static final field ACCESS_DENIED Lpaspo/id/ssoprovider/shared/models/PaspoClientError;
+	public static final field ACTION_NOT_ALLOWED Lpaspo/id/ssoprovider/shared/models/PaspoClientError;
+	public static final field ATTEMPTS_EXCEEDED Lpaspo/id/ssoprovider/shared/models/PaspoClientError;
+	public static final field AUTH_METHOD_UNAVAILABLE Lpaspo/id/ssoprovider/shared/models/PaspoClientError;
+	public static final field CANCELLED Lpaspo/id/ssoprovider/shared/models/PaspoClientError;
+	public static final field CRYPTO_ERROR Lpaspo/id/ssoprovider/shared/models/PaspoClientError;
+	public static final field Companion Lpaspo/id/ssoprovider/shared/models/PaspoClientError$Companion;
+	public static final field IDENTITY_NOT_VERIFIED Lpaspo/id/ssoprovider/shared/models/PaspoClientError;
+	public static final field INVALID_REQUEST Lpaspo/id/ssoprovider/shared/models/PaspoClientError;
+	public static final field PACKAGE_VERIFICATION_FAILED Lpaspo/id/ssoprovider/shared/models/PaspoClientError;
+	public static final field PASPO_NOT_INSTALLED Lpaspo/id/ssoprovider/shared/models/PaspoClientError;
+	public static final field SERVICE_UNAVAILABLE Lpaspo/id/ssoprovider/shared/models/PaspoClientError;
+	public static final field SESSION_EXPIRED Lpaspo/id/ssoprovider/shared/models/PaspoClientError;
+	public static final field UNKNOWN Lpaspo/id/ssoprovider/shared/models/PaspoClientError;
+	public static final field UNSUPPORTED_AUTH_METHOD Lpaspo/id/ssoprovider/shared/models/PaspoClientError;
+	public final fun getCode ()I
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lpaspo/id/ssoprovider/shared/models/PaspoClientError;
+	public static fun values ()[Lpaspo/id/ssoprovider/shared/models/PaspoClientError;
+}
+
+public final class paspo/id/ssoprovider/shared/models/PaspoClientError$Companion {
+	public final fun fromCode (I)Lpaspo/id/ssoprovider/shared/models/PaspoClientError;
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class paspo/id/ssoprovider/shared/models/PaspoScope : java/lang/Enum {
+	public static final field Companion Lpaspo/id/ssoprovider/shared/models/PaspoScope$Companion;
+	public static final field EMAILS Lpaspo/id/ssoprovider/shared/models/PaspoScope;
+	public static final field NATIONAL_ID Lpaspo/id/ssoprovider/shared/models/PaspoScope;
+	public static final field PASPO_ID Lpaspo/id/ssoprovider/shared/models/PaspoScope;
+	public static final field PHONES Lpaspo/id/ssoprovider/shared/models/PaspoScope;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getKey ()Ljava/lang/String;
+	public static fun valueOf (Ljava/lang/String;)Lpaspo/id/ssoprovider/shared/models/PaspoScope;
+	public static fun values ()[Lpaspo/id/ssoprovider/shared/models/PaspoScope;
+}
+
+public final class paspo/id/ssoprovider/shared/models/PaspoScope$Companion {
+	public final fun fromKey (Ljava/lang/String;)Lpaspo/id/ssoprovider/shared/models/PaspoScope;
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class paspo/id/ssoprovider/shared/models/PaspoSsoResult$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class paspo/id/ssoprovider/shared/models/PaspoSsoResult$Failure : paspo/id/ssoprovider/shared/models/PaspoSsoResult {
+	public static final field Companion Lpaspo/id/ssoprovider/shared/models/PaspoSsoResult$Failure$Companion;
+	public fun <init> (I)V
+	public final fun component1 ()I
+	public final fun copy (I)Lpaspo/id/ssoprovider/shared/models/PaspoSsoResult$Failure;
+	public static synthetic fun copy$default (Lpaspo/id/ssoprovider/shared/models/PaspoSsoResult$Failure;IILjava/lang/Object;)Lpaspo/id/ssoprovider/shared/models/PaspoSsoResult$Failure;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getErrorCode ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class paspo/id/ssoprovider/shared/models/PaspoSsoResult$Failure$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lpaspo/id/ssoprovider/shared/models/PaspoSsoResult$Failure$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lpaspo/id/ssoprovider/shared/models/PaspoSsoResult$Failure;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lpaspo/id/ssoprovider/shared/models/PaspoSsoResult$Failure;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class paspo/id/ssoprovider/shared/models/PaspoSsoResult$Failure$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class paspo/id/ssoprovider/shared/models/PaspoSsoResult$Success : paspo/id/ssoprovider/shared/models/PaspoSsoResult {
+	public static final field Companion Lpaspo/id/ssoprovider/shared/models/PaspoSsoResult$Success$Companion;
+	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Lpaspo/id/ssoprovider/shared/models/PaspoSsoResult$Success;
+	public static synthetic fun copy$default (Lpaspo/id/ssoprovider/shared/models/PaspoSsoResult$Success;Ljava/lang/String;ILjava/lang/Object;)Lpaspo/id/ssoprovider/shared/models/PaspoSsoResult$Success;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getNonce ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class paspo/id/ssoprovider/shared/models/PaspoSsoResult$Success$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lpaspo/id/ssoprovider/shared/models/PaspoSsoResult$Success$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lpaspo/id/ssoprovider/shared/models/PaspoSsoResult$Success;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lpaspo/id/ssoprovider/shared/models/PaspoSsoResult$Success;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class paspo/id/ssoprovider/shared/models/PaspoSsoResult$Success$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final synthetic class paspo/id/ssoprovider/shared/models/internal/EncryptedEnvelope$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lpaspo/id/ssoprovider/shared/models/internal/EncryptedEnvelope$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lpaspo/id/ssoprovider/shared/models/internal/EncryptedEnvelope;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lpaspo/id/ssoprovider/shared/models/internal/EncryptedEnvelope;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class paspo/id/ssoprovider/shared/models/internal/EncryptedEnvelope$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final synthetic class paspo/id/ssoprovider/shared/models/internal/SecureBytes$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lpaspo/id/ssoprovider/shared/models/internal/SecureBytes$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lpaspo/id/ssoprovider/shared/models/internal/SecureBytes;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lpaspo/id/ssoprovider/shared/models/internal/SecureBytes;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class paspo/id/ssoprovider/shared/models/internal/SecureBytes$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
