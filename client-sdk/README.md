@@ -91,6 +91,8 @@ dependencies {
 
 ## Quick start: the ready-made button
 
+![Paspo ID sign-in button - brand, light and dark themes, full and icon-only](buttons.svg)
+
 The ready-made button runs the entire flow on tap and blocks repeated taps while a request is in progress. It requires two inputs: a nonce provider and a result handler.
 
 ```kotlin
