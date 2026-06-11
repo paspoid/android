@@ -46,7 +46,7 @@ import paspo.id.ssoprovider.ui.PaspoButtonTheme
 import paspo.id.ssoprovider.ui.R
 
 private const val DISABLED_ALPHA = 0.6f
-private val ICON_SIZE = 28.dp
+private val ICON_SIZE = 30.dp
 private val MIN_HEIGHT = 48.dp
 
 /**

@@ -264,7 +264,7 @@ public class PaspoSignInButton @JvmOverloads constructor(
     )
 
     private companion object {
-        const val ICON_SIZE_DP = 28f
+        const val ICON_SIZE_DP = 30f
         const val GAP_DP = 12f
         const val H_PADDING_DP = 16f
         const val MIN_HEIGHT_DP = 48f
