@@ -19,6 +19,7 @@ import androidx.activity.ComponentActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.content.withStyledAttributes
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.graphics.withTranslation
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
@@ -79,6 +80,13 @@ public class PaspoSignInButton @JvmOverloads constructor(
             applyStyle()
         }
 
+    public var showLogo: Boolean = true
+        set(value) {
+            field = value
+            requestLayout()
+            invalidate()
+        }
+
     private var inFlight = false
 
     init {
@@ -88,6 +96,7 @@ public class PaspoSignInButton @JvmOverloads constructor(
             buttonTheme = PaspoButtonTheme.entries[getInt(R.styleable.PaspoSignInButton_paspoTheme, 0)]
             cornerRadius = getDimension(R.styleable.PaspoSignInButton_paspoCornerRadius, dp(PILL_RADIUS_DP))
             iconOnly = getBoolean(R.styleable.PaspoSignInButton_paspoIconOnly, false)
+            showLogo = getBoolean(R.styleable.PaspoSignInButton_paspoShowLogo, true)
         }
         applyStyle()
     }
@@ -168,16 +177,18 @@ public class PaspoSignInButton @JvmOverloads constructor(
     ) {
         val height = resolveSize(max(minHeightPx, iconSizePx.toFloat()).roundToInt(), heightMeasureSpec)
 
+        val logoPart = if (showLogo) iconSizePx + gapPx else 0f
+
         val desiredWidth = if (iconOnly) {
             height
         } else {
             val textWidth = Layout.getDesiredWidth(labelText, textPaint)
-            (hPaddingPx * 2 + iconSizePx + gapPx + textWidth).roundToInt()
+            (hPaddingPx * 2 + logoPart + textWidth).roundToInt()
         }
         val width = resolveSize(desiredWidth, widthMeasureSpec)
 
         if (!iconOnly) {
-            val available = (width - hPaddingPx * 2 - iconSizePx - gapPx).roundToInt().coerceAtLeast(0)
+            val available = (width - hPaddingPx * 2 - logoPart).roundToInt().coerceAtLeast(0)
             textLayout = StaticLayout.Builder
                 .obtain(labelText, 0, labelText.length, textPaint, available)
                 .setEllipsize(TextUtils.TruncateAt.END)
@@ -191,9 +202,8 @@ public class PaspoSignInButton @JvmOverloads constructor(
     }
 
     override fun onDraw(canvas: Canvas) {
-        val drawable = logo ?: return
-
         if (iconOnly) {
+            val drawable = logo ?: return
             val left = (width - iconSizePx) / 2
             val top = (height - iconSizePx) / 2
             drawable.setBounds(left, top, left + iconSizePx, top + iconSizePx)
@@ -202,21 +212,23 @@ public class PaspoSignInButton @JvmOverloads constructor(
         }
 
         val layout = textLayout ?: return
+        val drawLogo = showLogo && logo != null
+        val logoPart = if (drawLogo) iconSizePx + gapPx else 0f
         val textWidth = layout.getLineWidth(0)
-        val groupWidth = iconSizePx + gapPx + textWidth
+        val groupWidth = logoPart + textWidth
         val startX = (width - groupWidth) / 2f
 
-        val iconTop = (height - iconSizePx) / 2
-        val iconLeft = startX.roundToInt()
-        drawable.setBounds(iconLeft, iconTop, iconLeft + iconSizePx, iconTop + iconSizePx)
-        drawable.draw(canvas)
+        if (drawLogo) {
+            val drawable = logo!!
+            val iconTop = (height - iconSizePx) / 2
+            val iconLeft = startX.roundToInt()
+            drawable.setBounds(iconLeft, iconTop, iconLeft + iconSizePx, iconTop + iconSizePx)
+            drawable.draw(canvas)
+        }
 
-        val textX = startX + iconSizePx + gapPx
+        val textX = startX + logoPart
         val textY = (height - layout.height) / 2f
-        canvas.save()
-        canvas.translate(textX, textY)
-        layout.draw(canvas)
-        canvas.restore()
+        canvas.withTranslation(textX, textY) { layout.draw(this) }
     }
 
     private fun colorsFor(theme: PaspoButtonTheme): ButtonColors =

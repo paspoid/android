@@ -71,6 +71,7 @@ public fun PaspoSignInButton(
     theme: PaspoButtonTheme = PaspoButtonTheme.BRAND,
     cornerRadius: Dp = PaspoSignInButtonDefaults.CornerRadius,
     iconOnly: Boolean = false,
+    showLogo: Boolean = true,
 ) {
     val activity = LocalActivity.current as? ComponentActivity
         ?: error("PaspoSignInButton must be hosted in a ComponentActivity")
@@ -97,6 +98,7 @@ public fun PaspoSignInButton(
         theme = theme,
         cornerRadius = cornerRadius,
         iconOnly = iconOnly,
+        showLogo = showLogo,
         enabled = !inFlight
     )
 }
@@ -112,6 +114,7 @@ public fun PaspoSignInButtonContent(
     theme: PaspoButtonTheme = PaspoButtonTheme.BRAND,
     cornerRadius: Dp = PaspoSignInButtonDefaults.CornerRadius,
     iconOnly: Boolean = false,
+    showLogo: Boolean = true,
     enabled: Boolean = true,
     colors: PaspoButtonColors = theme.colors(),
 ) {
@@ -137,8 +140,10 @@ public fun PaspoSignInButtonContent(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            PaspoLogo(colors.content)
-            Spacer(Modifier.width(12.dp))
+            if (showLogo) {
+                PaspoLogo(colors.content)
+                Spacer(Modifier.width(12.dp))
+            }
             Text(
                 text = labelText,
                 color = colors.content,

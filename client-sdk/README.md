@@ -55,7 +55,7 @@ Add the repository and the dependency. No further configuration is required: the
 // settings.gradle.kts
 dependencyResolutionManagement {
     repositories {
-        maven(url = "https://cdn.paspo.id/android")
+        maven(url = "https://cdn.paspo.id/cdn/android")
     }
 }
 ```
@@ -73,7 +73,7 @@ dependencies {
 
 ## Quick start: the ready-made button
 
-![Paspo ID sign-in button - brand, light and dark themes, full and icon-only](buttons.svg)
+![Paspo ID sign-in button - brand, light and dark themes, full, text-only and icon-only](buttons.svg)
 
 The ready-made button runs the entire flow on tap and blocks repeated taps while a request is in progress. It requires two inputs: a nonce provider and a result handler.
 
@@ -142,6 +142,7 @@ The button renders independently of the host theme so that it appears identical 
 | `theme` / `app:paspoTheme` | `BRAND`, `LIGHT`, `DARK`, `NEUTRAL` | `BRAND` |
 | `cornerRadius` / `app:paspoCornerRadius` | any dimension; a large value renders a pill | pill |
 | `iconOnly` / `app:paspoIconOnly` | `true` / `false` (logo only) | `false` |
+| `showLogo` / `app:paspoShowLogo` | `true` / `false` (text only when false) | `true` |
 
 ## Custom integration
 

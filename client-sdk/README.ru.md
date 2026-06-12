@@ -55,7 +55,7 @@ SDK интегрируется в приложения с minSdk 23, однак�
 // settings.gradle.kts
 dependencyResolutionManagement {
     repositories {
-        maven(url = "https://cdn.paspo.id/android")
+        maven(url = "https://cdn.paspo.id/cdn/android")
     }
 }
 ```
@@ -73,7 +73,7 @@ dependencies {
 
 ## Быстрый старт: готовая кнопка
 
-![Кнопка входа Paspo ID - темы brand, light и dark, полная и icon-only](buttons.svg)
+![Кнопка входа Paspo ID - темы brand, light и dark, полная, только текст и icon-only](buttons.svg)
 
 Готовая кнопка запускает весь поток по нажатию и блокирует повторные нажатия, пока выполняется запрос. Ей требуются две вещи: поставщик nonce и обработчик результата.
 
@@ -142,6 +142,7 @@ binding.paspoButton.setAuthHandler(
 | `theme` / `app:paspoTheme` | `BRAND`, `LIGHT`, `DARK`, `NEUTRAL` | `BRAND` |
 | `cornerRadius` / `app:paspoCornerRadius` | любая величина; большое значение даёт pill | pill |
 | `iconOnly` / `app:paspoIconOnly` | `true` / `false` (только логотип) | `false` |
+| `showLogo` / `app:paspoShowLogo` | `true` / `false` (только текст при false) | `true` |
 
 ## Собственная интеграция
 

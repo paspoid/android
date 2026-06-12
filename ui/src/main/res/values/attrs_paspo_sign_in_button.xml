@@ -9,5 +9,6 @@
         </attr>
         <attr name="paspoCornerRadius" format="dimension" />
         <attr name="paspoIconOnly" format="boolean" />
+        <attr name="paspoShowLogo" format="boolean" />
     </declare-styleable>
 </resources>
