@@ -3,6 +3,7 @@
 
     <queries>
         <package android:name="paspo.id" />
+        <package android:name="com.android.vending" />
     </queries>
 
 </manifest>

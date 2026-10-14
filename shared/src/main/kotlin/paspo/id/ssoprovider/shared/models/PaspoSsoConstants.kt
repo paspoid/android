@@ -20,4 +20,15 @@ public object PaspoSsoConstants {
     public const val EXTRA_ERROR_CODE: String = "$EXTRAS_PREFIX:error_code"
 
     public const val EXTRA_REFERRAL_NONCE: String = "$EXTRAS_PREFIX:referral_nonce"
+
+    public const val EXTRA_RETURNED_FROM_STORE: String = "$EXTRAS_PREFIX:returned_from_store"
+    public const val EXTRA_NONCE_REFRESHER: String = "$EXTRAS_PREFIX:nonce_refresher"
+    public const val KEY_NONCE_REPLY_TO: String = "$EXTRAS_PREFIX:nonce_reply_to"
+    public const val KEY_REFRESHED_NONCE: String = "$EXTRAS_PREFIX:refreshed_nonce"
+    public const val NONCE_REFRESH_REQUEST: Int = 2
+    public const val NONCE_REFRESH_SUCCESS: Int = 1
+    public const val NONCE_REFRESH_FAILURE: Int = 0
+
+    public const val REFERRER_SSO_PREFIX: String = "sso"
+    public const val REFERRER_SSO_SEPARATOR: String = "-"
 }

@@ -4,7 +4,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
-## [1.0.0] - unreleased
+## [1.2.0] - 2026-10-14
+
+### Added
+- `authenticate(scope, nonce, refreshNonce)`: Paspo asks the SDK for a new nonce when the current one expires (while the user installs Paspo and signs up, or when the consent screen stays open too long), and the flow goes on instead of ending with `SESSION_EXPIRED`. The ready-made buttons pass their `nonceProvider` as `refreshNonce`.
+- When Paspo is not installed, the store link carries the client package and the requested scope in `referrer`, so Paspo runs a short sign-up for this client.
+- The SDK manifest declares visibility of Google Play (`<queries>`), which the inline install sheet needs on Android 11+.
+
+### Changed
+- Google Play opens as an inline install sheet on top of the client app. Without Google Play the SDK opens `market://`, and Android picks the store installed on the device (RuStore, AppGallery, GetApps) with the same `referrer`. Without any store the Paspo ID website opens (`https://paspo.id/mob/s/<referrer>`).
+- When Paspo is not installed, `authenticate` no longer returns right after opening the store. It waits for the installation and then opens the Paspo consent screen by itself: a new user signs up in Paspo and comes back to the consent screen, without tapping the sign-in button again. `NotInstalled` is returned only when the user comes back to your app without installing Paspo.
+- After Paspo is installed, the SDK closes the Google Play screens left on top of your activity: it brings your activity back with `FLAG_ACTIVITY_CLEAR_TOP | FLAG_ACTIVITY_SINGLE_TOP`, so it receives `onNewIntent` with the `PaspoID.EXTRA_RETURNED_FROM_STORE` extra and nothing else. Skip your usual intent handling for such intents.
+- Supporting `PaspoID.ACTION_SIGN_IN` is now required. Paspo uses it to bring a user who has just signed up back to sign-in in your app when the flow started by `authenticate` is gone, for example after the system killed your app during the sign-up.
+
+## [1.0.0] - 2026-06-12
 
 ### Added
 - `PaspoID(activity)` - the SDK entry point.

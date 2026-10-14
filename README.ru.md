@@ -28,7 +28,7 @@ Paspo ID SDK добавляет «Войти через Paspo» в ваше Andr
 
 ## Обзор
 
-Интеграция сводится к одному вызову `authenticate(scope, nonce)`, который возвращает одноразовый код авторизации. Приложение передаёт этот код на свой сервер, а тот обменивает его у Paspo на данные пользователя. Со стороны пользователя поток выглядит так: нажатие «Войти через Paspo ID», подтверждение на экране согласия Paspo и возврат в приложение.
+Интеграция сводится к одному вызову `authenticate(scope, nonce, refreshNonce)`, который возвращает одноразовый код авторизации. Приложение передаёт этот код на свой сервер, а тот обменивает его у Paspo на данные пользователя. Со стороны пользователя поток выглядит так: нажатие «Войти через Paspo ID», подтверждение на экране согласия Paspo и возврат в приложение.
 
 Весь обмен между приложением и Paspo защищён end-to-end шифрованием (ECDH P-256 + AES-256-GCM, эфемерные ключи хранятся только в памяти) и выполняется SDK; криптографические операции с вашей стороны не требуются.
 
@@ -151,6 +151,8 @@ binding.paspoButton.setAuthHandler(
 Действуют два ограничения:
 
 - Одновременно может выполняться только один `authenticate`; новый вызов сбрасывает предыдущий.
+- Передавайте `refreshNonce`. Nonce живёт на сервере недолго, и Paspo вызывает этот блок, когда он истёк: пока пользователь ставит Paspo и регистрируется или если экран согласия долго открыт. Поток продолжается с новым nonce, а не завершается ошибкой `SESSION_EXPIRED`. Перегрузка без `refreshNonce` оставлена для совместимости.
+- Если Paspo устанавливается во время потока, SDK закрывает экраны Google Play, оставшиеся поверх вашей activity: поднимает её с `FLAG_ACTIVITY_CLEAR_TOP | FLAG_ACTIVITY_SINGLE_TOP`. Activity получит `onNewIntent` с extra `PaspoID.EXTRA_RETURNED_FROM_STORE` и больше ничем; обычную обработку intent для него пропустите.
 - `PaspoID` держит ссылку на Activity и должен оставаться в UI-слое. Не храните его в ViewModel или синглтоне; передавайте во ViewModel только результат.
 
 ### Compose
@@ -165,7 +167,7 @@ fun LoginScreen() {
     Button(
         onClick = {
             scope.launch {
-                onPaspoResult(paspoId.authenticate(PaspoScope.PHONES, backend.requestSsoNonce()))
+                onPaspoResult(paspoId.authenticate(PaspoScope.PHONES, backend.requestSsoNonce(), refreshNonce = backend::requestSsoNonce))
             }
         },
     ) {
@@ -184,7 +186,7 @@ class LoginActivity : AppCompatActivity() {
     private val paspoId = PaspoID(this)
 
     private fun signInWithPaspo() = lifecycleScope.launch {
-        onPaspoResult(paspoId.authenticate(PaspoScope.PHONES, backend.requestSsoNonce()))
+        onPaspoResult(paspoId.authenticate(PaspoScope.PHONES, backend.requestSsoNonce(), refreshNonce = backend::requestSsoNonce))
     }
 }
 ```
@@ -198,7 +200,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
     private val paspoId by lazy { PaspoID(requireActivity() as ComponentActivity) }
 
     private fun signInWithPaspo() = viewLifecycleOwner.lifecycleScope.launch {
-        onPaspoResult(paspoId.authenticate(PaspoScope.PHONES, backend.requestSsoNonce()))
+        onPaspoResult(paspoId.authenticate(PaspoScope.PHONES, backend.requestSsoNonce(), refreshNonce = backend::requestSsoNonce))
     }
 }
 ```
@@ -209,7 +211,9 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
 
 ## Вход, инициированный из Paspo
 
-Пользователь может начать вход и изнутри Paspo. В этом случае Paspo запускает ваше приложение с action `paspo.id.ssoprovider.action.AUTHENTICATE` (константа `PaspoID.ACTION_SIGN_IN`). Поддержка этой точки входа опциональна.
+Paspo запускает ваше приложение с action `paspo.id.ssoprovider.action.AUTHENTICATE` (константа `PaspoID.ACTION_SIGN_IN`) в двух случаях: когда пользователь начинает вход изнутри Paspo и когда новый пользователь, пришедший из вашего приложения, заканчивает регистрацию в Paspo, а поток, начатый `authenticate`, продолжить уже нельзя (например, система выгрузила ваше приложение во время регистрации). Во втором случае так Paspo возвращает его прямо во вход.
+
+Поддержка этой точки входа обязательна. Без неё такой пользователь попадёт на главный экран вашего приложения и должен будет нажать кнопку входа ещё раз.
 
 Объявите intent-filter на Activity входа:
 
@@ -247,7 +251,7 @@ if (paspoId.checkInstallation()) {
 }
 ```
 
-Вызов опционален: `authenticate` выполняет проверку сам и, если Paspo не установлен, открывает Play Store и возвращает `NotInstalled`.
+Вызов опционален: `authenticate` выполняет проверку сам и, если Paspo не установлен, открывает магазин приложений и ждёт установки.
 
 `paspoId.cleanup()` очищает эфемерные ключи. SDK вызывает его автоматически при завершении и при ошибках; вручную он нужен только если вы сами прерываете поток, например когда пользователь уходит с экрана входа.
 
@@ -274,12 +278,12 @@ sequenceDiagram
 ```
 
 1. Сервер генерирует `nonce` и передаёт его приложению.
-2. Приложение вызывает `authenticate(scope, nonce)`. SDK генерирует эфемерную пару ключей ECDH и открывает Paspo.
-3. Paspo проверяет подпись и package приложения и показывает экран согласия с запрошенным scope.
+2. Приложение вызывает `authenticate(scope, nonce, refreshNonce)`. SDK генерирует эфемерную пару ключей ECDH и открывает Paspo.
+3. Paspo проверяет подпись и package приложения и показывает экран согласия с запрошенным scope. Если у пользователя ещё нет аккаунта Paspo, сначала открывается регистрация, а после неё пользователь возвращается на экран согласия. Если по пути nonce истёк, Paspo просит у SDK новый, и SDK вызывает `refreshNonce`.
 4. После подтверждения Paspo возвращает зашифрованный ответ; SDK расшифровывает его и возвращает `Success(authCode)`.
 5. Приложение отправляет код на свой сервер, тот обменивает его у Paspo на данные пользователя (см. серверную документацию Paspo).
 
-Если Paspo не установлен, SDK сохраняет `nonce`, открывает Play Store и возвращает `NotInstalled`. После установки Paspo и повторного вызова `authenticate` сохранённый nonce передаётся как referral для аналитики установки.
+Если Paspo не установлен, SDK сохраняет `nonce`, открывает магазин приложений и ждёт. Google Play открывается шторкой поверх вашего приложения, без Google Play открывается магазин, установленный на устройстве (RuStore, AppGallery, GetApps), а если магазина нет, сайт Paspo ID. Как только Paspo установлен, поток продолжается с шага 2 с nonce из `refreshNonce`, а сохранённый nonce передаётся как referral для аналитики установки. `NotInstalled` приходит, только если пользователь вернулся в ваше приложение, не установив Paspo.
 
 ## Справочник
 
@@ -302,7 +306,7 @@ Sealed-тип, покрывающий все исходы `authenticate`:
 |---|---|---|
 | `Success` | `authCode: String` | Отправить `authCode` на ваш сервер |
 | `Cancelled` | - | Пользователь закрыл экран согласия; обычно UI ошибки не нужен |
-| `NotInstalled` | - | Paspo не установлен; SDK открыл Play Store |
+| `NotInstalled` | - | Пользователь вернулся из магазина приложений, не установив Paspo |
 | `Failure` | `error: PaspoClientError`, `message: String?` | Показать ошибку. `message` предназначен для логов, не для пользователя |
 
 `Cancelled` и `NotInstalled` возвращаются отдельными ветками и никогда не приходят внутри `Failure`.
@@ -315,7 +319,7 @@ Sealed-тип, покрывающий все исходы `authenticate`:
 | 101 | `INVALID_REQUEST` | Некорректный запрос или повреждённые данные |
 | 102 | `SERVICE_UNAVAILABLE` | Paspo временно недоступен |
 | 103 | `CANCELLED` | Пользователь отменил операцию |
-| 110 | `SESSION_EXPIRED` | Сессия истекла; начните заново с новым nonce |
+| 110 | `SESSION_EXPIRED` | Сессия истекла, и продлить её не удалось; начните заново с новым nonce. С `refreshNonce` SDK сам обновляет истёкший nonce |
 | 111 | `PACKAGE_VERIFICATION_FAILED` | Приложение не прошло проверку подписи/package в Paspo. Убедитесь, что оба зарегистрированы при подключении |
 | 120 | `ACCESS_DENIED` | Пользователь отказал в доступе |
 | 121 | `IDENTITY_NOT_VERIFIED` | Личность пользователя в Paspo не подтверждена |
@@ -346,7 +350,7 @@ SDK очищает криптографическое состояние при 
 Самому SDK - нет; он общается с Paspo через Intent. Paspo и ваш сервер должны быть онлайн.
 
 **Что произойдёт, если пользователь удалит Paspo между входами?**
-`authenticate` это обнаружит, откроет Play Store и вернёт `NotInstalled`.
+`authenticate` это обнаружит, откроет магазин приложений и продолжит поток, когда Paspo снова будет установлен.
 
 **Можно ли использовать SDK из Compose?**
 Да; см. первый пример в разделе [Собственная интеграция](#compose) или используйте готовую кнопку.

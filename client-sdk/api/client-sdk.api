@@ -43,8 +43,10 @@ public final class paspo/id/ssoprovider/client/PaspoAuthResult$Success : paspo/i
 public final class paspo/id/ssoprovider/client/PaspoID {
 	public static final field ACTION_SIGN_IN Ljava/lang/String;
 	public static final field Companion Lpaspo/id/ssoprovider/client/PaspoID$Companion;
+	public static final field EXTRA_RETURNED_FROM_STORE Ljava/lang/String;
 	public fun <init> (Landroidx/activity/ComponentActivity;)V
 	public final fun authenticate (Lpaspo/id/ssoprovider/shared/models/PaspoScope;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun authenticate (Lpaspo/id/ssoprovider/shared/models/PaspoScope;Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun checkInstallation (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun cleanup ()V
 }

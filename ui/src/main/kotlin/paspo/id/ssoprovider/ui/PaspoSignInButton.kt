@@ -106,7 +106,8 @@ public class PaspoSignInButton @JvmOverloads constructor(
      *
      * @param activity host activity that launches the Paspo consent screen.
      * @param scope profile data requested from the user.
-     * @param nonceProvider suspend block that fetches a one-time nonce from your server.
+     * @param nonceProvider suspend block that fetches a one-time nonce from your server. The button
+     * calls it again when the nonce expires during the flow.
      * @param onResult receives the [PaspoAuthResult]. If [nonceProvider] fails, a
      * [PaspoAuthResult.Failure] with [PaspoClientError.SERVICE_UNAVAILABLE] is delivered.
      */
@@ -123,7 +124,7 @@ public class PaspoSignInButton @JvmOverloads constructor(
             isEnabled = false
             activity.lifecycleScope.launch {
                 try {
-                    onResult(paspoId.authenticate(scope, nonceProvider()))
+                    onResult(paspoId.authenticate(scope, nonceProvider(), refreshNonce = { nonceProvider() }))
                 } catch (e: CancellationException) {
                     throw e
                 } catch (t: Exception) {

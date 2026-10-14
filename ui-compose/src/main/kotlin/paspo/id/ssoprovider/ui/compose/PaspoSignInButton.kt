@@ -58,7 +58,8 @@ private val MIN_HEIGHT = 48.dp
  *
  * @param onResult receives the [PaspoAuthResult]. If [nonceProvider] fails, a
  * [PaspoAuthResult.Failure] with [PaspoClientError.SERVICE_UNAVAILABLE] is delivered.
- * @param nonceProvider suspend block that fetches a one-time nonce from your server.
+ * @param nonceProvider suspend block that fetches a one-time nonce from your server. The button
+ * calls it again when the nonce expires during the flow.
  * @param scope profile data requested from the user.
  * @param cornerRadius corner radius; the default renders a pill, pass a smaller value to round less.
  */
@@ -84,7 +85,7 @@ public fun PaspoSignInButton(
             inFlight = true
             coroutineScope.launch {
                 try {
-                    onResult(paspoId.authenticate(scope, nonceProvider()))
+                    onResult(paspoId.authenticate(scope, nonceProvider(), refreshNonce = { nonceProvider() }))
                 } catch (e: CancellationException) {
                     throw e
                 } catch (t: Exception) {

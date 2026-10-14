@@ -21,8 +21,8 @@ public sealed interface PaspoAuthResult {
     public data object Cancelled : PaspoAuthResult
 
     /**
-     * The Paspo app is not installed. The SDK has already opened its Play Store page;
-     * once the user installs Paspo and returns, call [PaspoID.authenticate] again.
+     * The Paspo app is not installed. The SDK has already opened its store page;
+     * after signing up, Paspo returns the user to your app with [PaspoID.ACTION_SIGN_IN].
      */
     public data object NotInstalled : PaspoAuthResult
 
